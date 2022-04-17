@@ -1,4 +1,5 @@
 import Head from "next/head";
+import HelloWorld from "../lib/HelloWorld";
 
 export default function Index() {
   return (
@@ -9,6 +10,7 @@ export default function Index() {
       </Head>
       <main className="flex flex-col items-center">
         <h1 className="text-6xl">App</h1>
+        <HelloWorld />
       </main>
     </div>
   );
