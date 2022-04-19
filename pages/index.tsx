@@ -10,8 +10,8 @@ export default function Index() {
       </Head>
       <main className="flex flex-col items-center">
         <h1 className="text-6xl">App</h1>
-        <HelloWorld />
+        <HelloWorldComponent />
       </main>
     </div>
-  );
+  )
 }
