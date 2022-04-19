@@ -1,5 +1,5 @@
-import Head from "next/head";
-import HelloWorld from "../lib/HelloWorld";
+import Head from 'next/head'
+import HelloWorldComponent from '../lib/HelloWorldComponent'
 
 export default function Index() {
   return (
