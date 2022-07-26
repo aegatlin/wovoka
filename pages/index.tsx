@@ -1,71 +1,101 @@
-import { Edit, XSquare } from 'lucide-react'
-import { useState } from 'react'
-import { Button, Card, Input, Loader } from '../lib/core'
-import { useGroupList } from '../lib/useGroupList'
-import { useGroupLists } from '../lib/useGroupLists'
-import { useGroups } from '../lib/useGroups'
+import { Card, Icon, Link, Loader, Page } from '../lib/front/core'
+import { NewItemForm } from '../lib/front/NewItemForm'
+import { useGroup } from '../lib/front/useGroup'
+import { useGroupsContext } from '../lib/front/useGroupsContext'
+import { useItem } from '../lib/front/useItem'
+import { useList } from '../lib/front/useList'
+import { useUserContext } from '../lib/front/useUserContext'
+import { Item, Pre } from '../lib/types'
 
 export default function Index() {
-  const { groups } = useGroups()
-  const { lists } = useGroupLists({ groupId: groups?.at(0)?.id })
-  const { list, create, destroy } = useGroupList({
-    groupId: groups?.at(0)?.id,
-    listId: lists?.at(0)?.id,
-  })
-  const [title, setTitle] = useState('')
-
-  if (!list || !lists || !groups)
-    return (
-      <div className="mt-16 flex items-center justify-center">
-        <Loader.Main />
-      </div>
-    )
+  const { user } = useUserContext()
 
   return (
-    <main className="mt-16 flex flex-col items-center">
-      <h1 className="my-4 text-6xl">App</h1>
-      {groups && lists && list && (
-        <Card.Main>
-          <div className="">
-            <span>Group: </span>
-            <span>{groups[0].title}</span>
-          </div>
-          <div className="">
-            <span>List: </span>
-            <span>{lists[0].title}</span>
-          </div>
-          <div className="flex flex-col space-y-4">
-            {list.items.map(item => {
-              return (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between rounded-xl border p-4"
-                >
-                  <span className="grow">{item.title}</span>
-                  <button>
-                    <Edit size={24} />
-                  </button>
-                  <button onClick={() => destroy(item)}>
-                    <XSquare size={24} />
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-          <div className="mt-8 flex items-center space-x-4">
-            <Input.Text
-              name="title"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-            />
-            <Button.Main
-              onClick={() => create({ title: title, listId: list.id })}
-            >
-              Create
-            </Button.Main>
-          </div>
-        </Card.Main>
-      )}
-    </main>
+    <Page.Main>
+      <main>
+        {!user && <SignUpOrSignInCard />}
+        {user && <View />}
+      </main>
+    </Page.Main>
+  )
+}
+
+function SignUpOrSignInCard() {
+  return (
+    <Card.Main>
+      <div className="space-x-1">
+        <Link.Main to="/sign-up">Sign up</Link.Main>
+        <span>or</span>
+        <Link.Main to="/sign-in">sign in</Link.Main>
+        <span>to get started</span>
+      </div>
+    </Card.Main>
+  )
+}
+
+function View() {
+  return (
+    <Card.Main>
+      <Groups />
+    </Card.Main>
+  )
+}
+
+function Groups() {
+  const { groups } = useGroupsContext()
+
+  if (!groups) return <Loader.Main />
+
+  return (
+    <div className="">
+      <Group groupId={groups[0].id} />
+    </div>
+  )
+}
+
+function Group({ groupId }) {
+  const { group } = useGroup({ groupId })
+
+  if (!group) return <Loader.Main />
+
+  return (
+    <div>
+      <div>{group.title}</div>
+      <List listId={group.lists[0].id} />
+    </div>
+  )
+}
+
+function List({ listId }) {
+  const { list, create } = useList({ listId })
+  const onFormSubmit = ({ title }) => create({ title, listId: list?.id })
+
+  if (!list) return <Loader.Main />
+
+  return (
+    <div className="mt-4 space-y-4">
+      {list.items.map((i) => (
+        <ListItem key={i.id} item={i} />
+      ))}
+      <div className="">
+        <NewItemForm createItem={(item: Pre<Item>) => create(item)} />
+      </div>
+    </div>
+  )
+}
+
+function ListItem({ item }: { item: Item }) {
+  const { destroy } = useItem({ itemId: item.id })
+
+  return (
+    <div className="flex rounded-xl border p-4">
+      <span className="grow">{item.title}</span>
+      <button>
+        <Icon.Edit />
+      </button>
+      <button onClick={() => destroy(item)}>
+        <Icon.X />
+      </button>
+    </div>
   )
 }

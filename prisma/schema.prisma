@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  tokens      Token[]
+  confirmedAt DateTime?
+  groups      Group[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Token {
+  id        String   @id @default(uuid())
+  reason    String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Group {
+  id        String   @id @default(uuid())
+  name      String
+  lists     List[]
+  members   User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model List {
+  id        String   @id @default(uuid())
+  name      String
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id])
+  items     Item[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Item {
+  id        String   @id @default(uuid())
+  content   String
+  listId    String
+  list      List     @relation(fields: [listId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
