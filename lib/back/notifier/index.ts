@@ -5,7 +5,7 @@ export type { SentEmail }
 
 export const Notifier = {
   async sendSignUpEmail(user: User, token: Token): Promise<SentEmail> {
-    const url = `http://localhost:3000/api/auth/sign-up/confirm?token=${token.id}`
+    const url = `http://localhost:3000/api/auth/confirm?token=${token.id}`
 
     return await sendEmail({
       from: 'app@example.com',
@@ -18,7 +18,7 @@ export const Notifier = {
     })
   },
   async sendSignInEmail(user: User, token: Token): Promise<SentEmail> {
-    const url = `http://localhost:3000/api/auth/sign-in/confirm?token=${token.id}`
+    const url = `http://localhost:3000/api/auth/confirm?token=${token.id}`
 
     return await sendEmail({
       from: 'app@example.com',

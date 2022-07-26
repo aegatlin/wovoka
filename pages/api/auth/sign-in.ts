@@ -8,7 +8,7 @@ export default async function signUp(
   const { email } = req.body
 
   if (email) {
-    console.log(await Accounts.signUp(email))
+    console.log(await Accounts.signIn(email))
   }
   res.status(200).send('OK')
 }

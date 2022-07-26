@@ -1,11 +1,9 @@
+import { Group, Prisma } from '@prisma/client'
 import { Card, Icon, Link, Loader, Page } from '../lib/front/core'
-import { NewItemForm } from '../lib/front/NewItemForm'
-import { useGroup } from '../lib/front/useGroup'
 import { useGroupsContext } from '../lib/front/useGroupsContext'
 import { useItem } from '../lib/front/useItem'
-import { useList } from '../lib/front/useList'
 import { useUserContext } from '../lib/front/useUserContext'
-import { Item, Pre } from '../lib/types'
+import { Item } from '../lib/types'
 
 export default function Index() {
   const { user } = useUserContext()
@@ -48,54 +46,52 @@ function Groups() {
 
   return (
     <div className="">
-      <Group groupId={groups[0].id} />
+      {groups.map((g) => (
+        <GroupComponent key={g.id} group={g} />
+      ))}
     </div>
   )
 }
 
-function Group({ groupId }) {
-  const { group } = useGroup({ groupId })
-
-  if (!group) return <Loader.Main />
-
+function GroupComponent({ group }) {
   return (
     <div>
-      <div>{group.title}</div>
-      <List listId={group.lists[0].id} />
+      <div>{group.name}</div>
+      {group.lists.map((l) => (
+        <List key={l.id} list={l} />
+      ))}
     </div>
   )
 }
 
-function List({ listId }) {
-  const { list, create } = useList({ listId })
-  const onFormSubmit = ({ title }) => create({ title, listId: list?.id })
-
-  if (!list) return <Loader.Main />
+function List({ list }) {
+  // const onFormSubmit = ({ title }) => create({ title, listId: list?.id })
 
   return (
     <div className="mt-4 space-y-4">
+      <div>{list.name}</div>
       {list.items.map((i) => (
         <ListItem key={i.id} item={i} />
       ))}
-      <div className="">
+      {/* <div className="">
         <NewItemForm createItem={(item: Pre<Item>) => create(item)} />
-      </div>
+      </div> */}
     </div>
   )
 }
 
-function ListItem({ item }: { item: Item }) {
-  const { destroy } = useItem({ itemId: item.id })
+function ListItem({ item }) {
+  // const { destroy } = useItem({ itemId: item.id })
 
   return (
     <div className="flex rounded-xl border p-4">
-      <span className="grow">{item.title}</span>
-      <button>
+      <span className="grow">{item.content}</span>
+      {/* <button>
         <Icon.Edit />
-      </button>
-      <button onClick={() => destroy(item)}>
+      </button> */}
+      {/* <button onClick={() => destroy(item)}>
         <Icon.X />
-      </button>
+      </button> */}
     </div>
   )
 }

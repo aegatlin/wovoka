@@ -50,16 +50,3 @@ async function getTransporter(): Promise<
 
   return transporter
 }
-
-// export default async function email(req, res) {
-//   const testEmail: Email = {
-//     from: 'bob@example.com',
-//     to: 'alice@example.com',
-//     subject: 'a test',
-//     text: 'wow',
-//     html: 'neat',
-//   }
-
-//   const x = await sendEmail(testEmail)
-//   console.log(x)
-// }

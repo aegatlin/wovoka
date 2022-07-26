@@ -1,39 +1,27 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, useContext } from 'react'
+import useSWR from 'swr'
 import { Group } from '../types'
-import { api } from './api'
 
 interface GroupsContext {
   groups?: Group[]
-  sync: () => void
+  error?: string
 }
 
-const GroupsContext = createContext<GroupsContext>({
-  sync: () => undefined,
-})
+const GroupsContext = createContext<GroupsContext>({})
 
 export function useGroupsContext(): GroupsContext {
-  const { groups, sync } = useContext(GroupsContext)
-
-  return {
-    groups,
-    sync,
-  }
+  const { groups } = useContext(GroupsContext)
+  return { groups }
 }
 
 export function ProvideGroups({ children }) {
-  const [groups, setGroups] = useState<Group[]>([])
+  const { data, error } = useSWR('/api/groups')
 
   return (
     <GroupsContext.Provider
       value={{
-        groups,
-        sync: () => undefined,
+        groups: data?.groups,
+        error,
       }}
     >
       {children}

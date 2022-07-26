@@ -1,5 +1,6 @@
 import { SWRConfig } from 'swr'
 import '../lib/front/styles.css'
+import { ProvideGroups } from '../lib/front/useGroupsContext'
 import { ProvideUser } from '../lib/front/useUserContext'
 
 function App({ Component, pageProps }) {
@@ -11,7 +12,9 @@ function App({ Component, pageProps }) {
       }}
     >
       <ProvideUser>
-        <Component {...pageProps} />
+        <ProvideGroups>
+          <Component {...pageProps} />
+        </ProvideGroups>
       </ProvideUser>
     </SWRConfig>
   )

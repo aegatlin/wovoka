@@ -22,6 +22,7 @@ function Main() {
       )}
       {user && (
         <div className="flex space-x-2">
+          <span>{user.email}</span>
           <Link.Main to="/sign-out">Sign Out</Link.Main>
         </div>
       )}

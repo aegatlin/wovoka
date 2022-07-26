@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { User } from '@prisma/client'
-import { db } from '../../lib/db'
-import { resetdb, sleep } from '../support'
+import { db } from '../../../lib/db'
+import { resetdb, sleep } from '../../support'
 
 test.beforeEach(async () => {
   await resetdb()
