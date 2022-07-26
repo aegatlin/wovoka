@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
-import { Page } from '../../lib/front/core'
-import { EmailForm } from '../../lib/front/EmailForm'
-import { useAuth } from '../../lib/front/useAuth'
+import { Page } from '../lib/front/core'
+import { EmailForm } from '../lib/front/EmailForm'
+import { useAuth } from '../lib/front/useAuth'
 
 export default function SignUp() {
   return (

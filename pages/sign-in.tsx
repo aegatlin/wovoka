@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
-import { Page } from '../../lib/front/core'
-import { EmailForm } from '../../lib/front/EmailForm'
+import { Page } from '../lib/front/core'
+import { EmailForm } from '../lib/front/EmailForm'
 
 export default function SignIn() {
   const router = useRouter()

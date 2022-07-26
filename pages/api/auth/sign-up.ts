@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Accounts } from '../../../../lib/back/accounts'
+import { Accounts } from '../../../lib/back/accounts'
 
 export default async function signUp(
   req: NextApiRequest,
