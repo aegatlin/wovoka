@@ -11,7 +11,7 @@ test.beforeEach(async () => {
 
 test('Accounts.signUp', async () => {
   const email = 'test@example.com'
-  const sentEmail = await Accounts.signUp(email)
+  const sentEmail = await Accounts.signUp({ email, rememberMe: false })
   const user = await db.prisma.user.findUnique({ where: { email } })
   expect(user).toBeTruthy()
 
@@ -68,24 +68,4 @@ test('Accounts.signOut', async () => {
   })
 
   expect(sessionToken).toBeNull()
-})
-
-test('Accounts.getUserBySessionToken', async () => {
-  const email = 'test@example.com'
-  const user = await db.prisma.user.create({
-    data: {
-      email,
-      confirmedAt: new Date(),
-    },
-  })
-  const token = await db.prisma.token.create({
-    data: {
-      type: TokenType.Session,
-      userId: user.id,
-    },
-  })
-
-  const user2 = await Accounts.getUserBySessionToken(token.id)
-  expect(user2?.id).toBe(user.id)
-  expect(user2?.email).toBe(user.email)
 })

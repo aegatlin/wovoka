@@ -1,30 +1,23 @@
 import { expect, test } from '@playwright/test'
+import { TokenType } from '@prisma/client'
 import { Notifier } from '.'
+import { factory } from '../../../tests/factory'
 import { resetdb } from '../../../tests/support'
-import { db } from '../../db'
 
 test.beforeEach(async () => {
   await resetdb()
 })
 
 test('sends sign up email', async () => {
-  const user = await db.prisma.user.create({
-    data: { email: 'bob@test.com' },
-  })
-  const token = await db.prisma.token.create({
-    data: { userId: user.id, reason: 'sign-up' },
-  })
-  const sentEmail = await Notifier.sendSignUpEmail(user, token)
+  const user = await factory.user.create()
+  const [token, hex] = await factory.token.create(user, TokenType.SignUp)
+  const sentEmail = await Notifier.sendSignUpEmail(user, hex)
   expect(sentEmail.email.subject).toMatch(/Sign Up/)
 })
 
 test('sends sign in email', async () => {
-  const user = await db.prisma.user.create({
-    data: { email: 'bob@test.com', confirmedAt: new Date() },
-  })
-  const token = await db.prisma.token.create({
-    data: { userId: user.id, reason: 'sign-in' },
-  })
-  const sentEmail = await Notifier.sendSignInEmail(user, token)
+  const user = await factory.user.create({ confirmed: true })
+  const [token, hex] = await factory.token.create(user, TokenType.SignIn)
+  const sentEmail = await Notifier.sendSignInEmail(user, hex)
   expect(sentEmail.email.subject).toMatch(/Sign In/)
 })

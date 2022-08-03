@@ -1,7 +1,7 @@
 import { User } from '@prisma/client'
 import cookie from 'cookie'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Accounts } from './accounts'
+import { Tokens } from './accounts/tokens'
 
 export function setSessionCookie(res: NextApiResponse, token: string): void {
   const c = cookie.serialize('session', token, {
@@ -19,7 +19,10 @@ export async function getUserFromSession(
 ): Promise<User | null> {
   const { session } = req.cookies
   if (!session) return null
-  const user = await Accounts.getUserBySessionToken(session)
+
+  const sessionToken = await Tokens.getTokenByHex(session)
+  const user = sessionToken?.user
+
   if (!user) return null
   return user
 }
