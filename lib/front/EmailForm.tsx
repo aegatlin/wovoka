@@ -1,29 +1,32 @@
+import { AuthData } from '../types'
 import {
   Button,
   Card,
   Form,
   Input,
   useChangeField,
+  useField,
   useForm,
   validation,
 } from './core'
 
 interface EmailFormProps {
   name: string
-  onSubmit: (email: string) => void
+  onSubmit: (authData: AuthData) => void
 }
 
 export function EmailForm({ name, onSubmit }: EmailFormProps) {
-  const _onSubmit = (state) => {
-    onSubmit(state.email.value)
+  const formSubmit = (state) => {
+    onSubmit({ email: state.email.value, rememberMe: state.rememberMe.value })
   }
 
   return (
-    <Form onSubmit={_onSubmit}>
+    <Form onSubmit={formSubmit}>
       <Card.Main>
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex max-w-lg flex-col items-center space-y-4">
           <h1 className="text-3xl">{name}</h1>
           <Email />
+          <RememberMe />
           <Submit value={name} />
         </div>
       </Card.Main>
@@ -34,7 +37,7 @@ export function EmailForm({ name, onSubmit }: EmailFormProps) {
 function Email() {
   const { name, value, valid, errors, onChange } = useChangeField({
     name: 'email',
-    validate: validation.requiredEmail,
+    validate: validation.email,
   })
 
   return (
@@ -50,6 +53,25 @@ function Email() {
       {valid === false && errors && (
         <div className="mt-2 text-red-500">{errors[0]}</div>
       )}
+    </div>
+  )
+}
+
+function RememberMe() {
+  const { name, value, update } = useField({
+    name: 'rememberMe',
+    value: false,
+  })
+
+  return (
+    <div>
+      <Input.Checkbox
+        name={name}
+        label="Remember this computer"
+        checked={value}
+        value={value}
+        onChange={() => update(!value)}
+      />
     </div>
   )
 }

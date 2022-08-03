@@ -1,11 +1,11 @@
-import { Token, User } from '@prisma/client'
+import { User } from '@prisma/client'
 import { sendEmail, SentEmail } from './email'
 
 export type { SentEmail }
 
 export const Notifier = {
-  async sendSignUpEmail(user: User, token: Token): Promise<SentEmail> {
-    const url = `http://localhost:3000/api/auth/confirm?token=${token.id}`
+  async sendSignUpEmail(user: User, token: string): Promise<SentEmail> {
+    const url = `http://localhost:3000/api/auth/confirm?token=${token}`
 
     return await sendEmail({
       from: 'app@example.com',
@@ -17,8 +17,8 @@ export const Notifier = {
       `,
     })
   },
-  async sendSignInEmail(user: User, token: Token): Promise<SentEmail> {
-    const url = `http://localhost:3000/api/auth/confirm?token=${token.id}`
+  async sendSignInEmail(user: User, token: string): Promise<SentEmail> {
+    const url = `http://localhost:3000/api/auth/confirm?token=${token}`
 
     return await sendEmail({
       from: 'app@example.com',

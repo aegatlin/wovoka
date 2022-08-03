@@ -11,7 +11,7 @@ export function useField({ name, value, validate }: FieldConfig): Field & {
     function setNewField() {
       const field = { name }
       if (validate) field['validate'] = validate
-      if (value) field['value'] = value
+      if (value != undefined) field['value'] = value
 
       setState({
         ...state,

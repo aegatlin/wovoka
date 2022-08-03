@@ -36,3 +36,12 @@ export interface Repo<T> {
   create?: (pre: Pre<T>) => Promise<T | null>
   update?: (t: T) => Promise<T | null>
 }
+
+export interface AuthData {
+  email: string
+  rememberMe: boolean
+}
+
+export interface JsonApi<T> {
+  data: T
+}

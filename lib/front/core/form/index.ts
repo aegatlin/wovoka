@@ -43,7 +43,7 @@ export const validation = {
     if (!value) return { valid: false, errors: [value] }
     return { valid: true, errors: [] }
   },
-  requiredEmail: (value: string): Validity => {
+  email: (value: string): Validity => {
     if (!value) return { valid: false, errors: ['Email required'] }
     if (!value.includes('@')) return { valid: false, errors: ['Bad Email'] }
     return { valid: true, errors: [] }

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
+import { TokenType } from '@prisma/client'
 import { Accounts } from '.'
+import { factory } from '../../../tests/factory'
 import { resetdb } from '../../../tests/support'
 import { db } from '../../db'
 
@@ -14,7 +16,7 @@ test('Accounts.signUp', async () => {
   expect(user).toBeTruthy()
 
   const token = await db.prisma.token.findFirst({
-    where: { userId: user!.id, reason: 'sign-up' },
+    where: { userId: user!.id, type: TokenType.SignUp },
   })
   expect(token).toBeTruthy()
 
@@ -23,65 +25,46 @@ test('Accounts.signUp', async () => {
 
 test.describe('Accounts.confirm', async () => {
   test('sign up', async () => {
-    const user = await db.prisma.user.create({
-      data: { email: 'test@example.com' },
-    })
-
-    const signUpToken = await db.prisma.token.create({
-      data: { userId: user.id, reason: 'sign-up' },
-    })
+    const user = await factory.user.create()
+    const [signUpToken, token] = await factory.token.create(
+      user,
+      TokenType.SignUp
+    )
 
     expect(user.confirmedAt).toBe(null)
 
-    const sessionToken = await Accounts.confirm(signUpToken.id)
+    await Accounts.confirm(token)
 
-    const user2 = await db.prisma.user.findUnique({
-      where: {
-        id: user.id,
-      },
-    })
-
+    const user2 = await db.prisma.user.findUnique({ where: { id: user.id } })
     expect(user2?.confirmedAt).toBeTruthy()
-    expect(sessionToken.userId).toBe(user.id)
+
+    const sessionToken = await db.prisma.token.findFirst({
+      where: { userId: user.id },
+    })
+    expect(sessionToken).toBeTruthy
   })
 })
 
 test('Accounts.signIn', async () => {
-  const email = 'test@example.com'
-  const user = await db.prisma.user.create({
-    data: {
-      email,
-      confirmedAt: new Date(),
-    },
+  const user = await factory.user.create({ confirmed: true })
+  const sentEmail = await Accounts.signIn({
+    email: user.email,
+    rememberMe: false,
   })
-
-  const sentEmail = await Accounts.signIn(email)
-  const token = await db.prisma.token.findFirst({
-    where: { reason: 'sign-in' },
+  const signInToken = await db.prisma.token.findFirst({
+    where: { type: TokenType.SignIn },
   })
-  expect(token?.userId).toBe(user.id)
+  expect(signInToken?.userId).toBe(user.id)
   expect(sentEmail.email.to).toBe(user.email)
 })
 
 test('Accounts.signOut', async () => {
-  const email = 'test@example.com'
-  const user = await db.prisma.user.create({
-    data: {
-      email,
-      confirmedAt: new Date(),
-    },
-  })
-  const token = await db.prisma.token.create({
-    data: {
-      reason: 'session',
-      userId: user.id,
-    },
-  })
-
+  const user = await factory.user.create({ confirmed: true })
+  await factory.token.create(user, TokenType.Session)
   await Accounts.signOut(user)
 
   const sessionToken = await db.prisma.token.findFirst({
-    where: { reason: 'session' },
+    where: { type: TokenType.Session },
   })
 
   expect(sessionToken).toBeNull()
@@ -97,7 +80,7 @@ test('Accounts.getUserBySessionToken', async () => {
   })
   const token = await db.prisma.token.create({
     data: {
-      reason: 'session',
+      type: TokenType.Session,
       userId: user.id,
     },
   })

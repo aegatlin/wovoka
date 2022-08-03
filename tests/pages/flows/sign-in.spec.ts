@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { TokenType } from '@prisma/client'
+import { Token, TokenType } from '@prisma/client'
 import { db } from '../../../lib/db'
 import { factory } from '../../factory'
 import { computeHash, eventually, resetdb } from '../../support'
@@ -8,45 +8,38 @@ test.beforeEach(async () => {
   await resetdb()
 })
 
-test('sign-up flow', async ({ context, page }) => {
-  const email = factory.email()
+test('sign-in flow', async ({ context, page }) => {
+  const user = await factory.user.create({ confirmed: true })
 
   await page.goto('/')
-  const signUpButton = page.locator('"Sign Up"')
-  await signUpButton.click()
+  const signInButton = page.locator('"Sign In"')
+  await signInButton.click()
 
-  await expect(page).toHaveURL('/sign-up')
+  await expect(page).toHaveURL('/sign-in')
   const emailInput = page.locator('"Email"')
-  await emailInput.fill(email)
-  const submitButton = page.locator('button:has-text("Sign Up")')
+  await emailInput.fill(user.email)
+  const submitButton = page.locator('button:has-text("Sign In")')
   await submitButton.click()
 
   await expect(page).toHaveURL('/check-email')
 
-  const user = await eventually(async () => {
-    return await db.prisma.user.findUnique({ where: { email } })
+  const signInToken = await eventually(async () => {
+    return await db.prisma.token.findFirst({
+      where: { userId: user.id, type: TokenType.SignIn },
+    })
   })
-  expect(user).toBeTruthy()
-  expect(user.confirmedAt).toBeNull()
+  expect(signInToken).toBeTruthy()
 
-  const signUpToken = await db.prisma.token.findFirst({
-    where: { userId: user?.id, type: TokenType.SignUp },
-  })
-  expect(signUpToken).toBeTruthy()
-
-  // can't figure out how to spy on the unhashed hex token being emailed
+  // can't figure out how to spy on the unhashed token being emailed
   // so instead, create _another_ token here and continue sign-in flow
   // with that token instead
-  const [signUpToken2, token] = await factory.token.create(
+  const [signInToken2, token] = await factory.token.create(
     user,
-    TokenType.SignUp
+    TokenType.SignIn
   )
 
   await page.goto(`/api/auth/confirm?token=${token}`)
   await expect(page).toHaveURL('/')
-
-  const userConfirmed = await db.prisma.user.findUnique({ where: { email } })
-  expect(userConfirmed?.confirmedAt).toBeTruthy()
 
   const sessionToken = await db.prisma.token.findFirst({
     where: { userId: user.id, type: TokenType.Session },

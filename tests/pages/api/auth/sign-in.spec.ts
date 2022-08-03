@@ -8,20 +8,17 @@ test.beforeEach(async () => {
   await resetdb()
 })
 
-test('/api/auth/sign-up', async ({ request }) => {
-  const email = factory.email()
-  const signUp = await request.post('/api/auth/sign-up', {
-    data: { email },
+test('/api/auth/sign-in', async ({ request }) => {
+  const user = await factory.user.create({ confirmed: true })
+  const signIn = await request.post('/api/auth/sign-in', {
+    data: { email: user.email, rememberMe: false },
   })
 
-  expect(signUp).toBeOK()
-  const user = await db.prisma.user.findUnique({ where: { email } })
-  expect(user).toBeTruthy()
-
-  const signUpToken = await db.prisma.token.findFirst({
-    where: { userId: user?.id, type: TokenType.SignUp },
+  expect(signIn).toBeOK()
+  const signInToken = await db.prisma.token.findFirst({
+    where: { userId: user?.id, type: TokenType.SignIn },
   })
-  expect(signUpToken).toBeTruthy()
+  expect(signInToken).toBeTruthy()
 
   const sessionToken = await db.prisma.token.findFirst({
     where: { userId: user?.id, type: TokenType.Session },

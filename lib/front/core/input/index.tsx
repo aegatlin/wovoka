@@ -3,6 +3,7 @@ import { ChangeEvent } from 'react'
 
 export const Input = {
   Text,
+  Checkbox,
 }
 
 interface InputProps {
@@ -46,4 +47,19 @@ const classes = {
       false: 'border-red-500',
     },
   }),
+}
+
+function Checkbox({ name, label, checked, value, onChange }) {
+  return (
+    <div className="flex space-x-2">
+      <input
+        id={name}
+        type="checkbox"
+        checked={checked}
+        value={value}
+        onChange={onChange}
+      />
+      {label && <label htmlFor={name}>{label}</label>}
+    </div>
+  )
 }

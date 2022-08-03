@@ -22,11 +22,20 @@ model User {
 }
 
 model Token {
-  id        String   @id @default(uuid())
-  reason    String
+  id        String    @id @default(uuid())
+  type      TokenType
+  hash      String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+}
+
+enum TokenType {
+  SignIn
+  SignUp
+  ChangeEmail
+  Session
+  RememberMe
 }
 
 model Group {
