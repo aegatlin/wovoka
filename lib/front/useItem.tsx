@@ -26,11 +26,8 @@ export function useItem({ itemId }): UseItem {
   })
 
   async function destroy() {
-    console.log('?')
     if (!item) return
-    console.log('??')
     const isSuccess = await api.item.delete(item)
-    console.log('???', isSuccess)
     if (isSuccess) sync()
   }
 

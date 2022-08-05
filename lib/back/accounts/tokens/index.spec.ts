@@ -11,7 +11,6 @@ test('Tokens.getTokenByHex', async () => {
   const user = await factory.user.create()
   const [token1, tokenHex] = await factory.token.create(user)
   const token2 = await Tokens.getTokenByHex(tokenHex)
-  console.log(token2, tokenHex)
   expect(token1.id).toBe(token2?.id)
 })
 

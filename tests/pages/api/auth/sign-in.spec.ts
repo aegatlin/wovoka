@@ -21,9 +21,4 @@ test('/api/auth/sign-in', async ({ request }) => {
     where: { userId: user?.id, type: TokenType.SignIn },
   })
   expect(signInToken).toBeTruthy()
-
-  const sessionToken = await db.prisma.token.findFirst({
-    where: { userId: user?.id, type: TokenType.Session },
-  })
-  expect(sessionToken).toBeTruthy()
 })
