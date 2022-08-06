@@ -3,13 +3,15 @@ import cookie from 'cookie'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Tokens } from './accounts/tokens'
 
-export function setSessionCookie(res: NextApiResponse, token: string): void {
-  const c = cookie.serialize('session', token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: true,
-    path: '/',
-  })
+export function setCookie(res: NextApiResponse, v: [string, string][]): void {
+  const c = v.map(([name, value]) =>
+    cookie.serialize(name, value, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+      path: '/',
+    })
+  )
 
   res.setHeader('Set-Cookie', c)
 }

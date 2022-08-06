@@ -9,14 +9,14 @@ test.beforeEach(async () => {
   await resetdb()
 })
 
-test('/api/auth/sign-in', async ({ request }) => {
+test('/api/auth/sign-in', async ({ page, request }) => {
   const user = await factory.user.create({ confirmed: true })
   const data: JsonApi<AuthData> = {
     data: { email: user.email, rememberMe: false },
   }
-  const signIn = await request.post('/api/auth/sign-in', { data })
+  const signInRes = await request.post('/api/auth/sign-in', { data })
+  expect(signInRes).toBeOK()
 
-  expect(signIn).toBeOK()
   const signInToken = await db.prisma.token.findFirst({
     where: { userId: user?.id, type: TokenType.SignIn },
   })

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUserFromSession } from '../../../lib/back/apiHelpers'
+import { JsonApi } from '../../../lib/types'
 
 export default async function session(
   req: NextApiRequest,
@@ -7,15 +8,12 @@ export default async function session(
 ) {
   const user = await getUserFromSession(req)
   if (!user) {
-    res.json({
-      user: null,
-    })
+    const body: JsonApi<null> = { data: null }
+    res.json(body)
   } else {
-    res.json({
-      user: {
-        id: user?.id,
-        email: user?.email,
-      },
-    })
+    const body: JsonApi<{ user: { id: string; email: string } }> = {
+      data: { user: { id: user?.id, email: user?.email } },
+    }
+    res.json(body)
   }
 }

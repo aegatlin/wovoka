@@ -1,4 +1,5 @@
 import { randEmail } from '@ngneat/falso'
+import { APIRequestContext } from '@playwright/test'
 import { Token, TokenType, User } from '@prisma/client'
 import { Tokens } from '../lib/back/accounts/tokens'
 import { db } from '../lib/db'
@@ -14,10 +15,10 @@ export const factory = {
 
       return await db.prisma.user.create({ data })
     },
-    async createSignedInUser(): Promise<User> {
-      const data = { email: factory.email(), confirmedAt: new Date() }
-      const user = await db.prisma.user.create({ data })
-      await factory.token.create(user, TokenType.Session)
+    async createSignedInUser(request: APIRequestContext): Promise<User> {
+      const user = await factory.user.create({ confirmed: true })
+      const [token, hex] = await factory.token.create(user, TokenType.SignIn)
+      await request.get(`/api/auth/confirm?token=${hex}`)
       return user
     },
   },
