@@ -9,7 +9,7 @@ test.beforeEach(async () => {
   await resetdb()
 })
 
-test('/api/auth/sign-in', async ({ page, request }) => {
+test('/api/auth/sign-in', async ({ request }) => {
   const user = await factory.user.create({ confirmed: true })
   const data: JsonApi<AuthData> = {
     data: { email: user.email, rememberMe: false },
@@ -21,4 +21,12 @@ test('/api/auth/sign-in', async ({ page, request }) => {
     where: { userId: user?.id, type: TokenType.SignIn },
   })
   expect(signInToken).toBeTruthy()
+})
+
+test('/api/auth/sign-in when email is not registered', async ({ request }) => {
+  const data: JsonApi<AuthData> = {
+    data: { email: factory.email(), rememberMe: false },
+  }
+  const signInRes = await request.post('/api/auth/sign-in', { data })
+  expect(signInRes).toBeOK()
 })

@@ -1,5 +1,4 @@
 import { default as NextLink } from 'next/link'
-import { ReactNode } from 'react'
 
 export const Link = {
   Main,
@@ -7,22 +6,23 @@ export const Link = {
 }
 
 interface LinkProps {
-  children: ReactNode
   to: string
+  text: string
+  onClick?: () => void
 }
 
-function Main({ to, children }: LinkProps) {
+function Main({ to, text, onClick }: LinkProps) {
   return (
-    <span className="text-blue-500">
-      <NextLink href={to}>{children}</NextLink>
+    <span className="text-blue-500" onClick={onClick}>
+      <NextLink href={to}>{text}</NextLink>
     </span>
   )
 }
 
-function Inherit({ to, children }: LinkProps) {
+function Inherit({ to, text, onClick }: LinkProps) {
   return (
-    <span>
-      <NextLink href={to}>{children}</NextLink>
+    <span onClick={onClick}>
+      <NextLink href={to}>{text}</NextLink>
     </span>
   )
 }

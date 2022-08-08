@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test'
 import { Token, TokenType } from '@prisma/client'
-import { db } from '../../../lib/db'
-import { factory } from '../../factory'
-import { computeHash, eventually, resetdb } from '../../support'
+import { db } from '../../lib/db'
+import { factory } from '../factory'
+import { computeHash, eventually, resetdb } from '../support'
 
 test.beforeEach(async () => {
   await resetdb()
@@ -51,4 +51,18 @@ test('sign-in flow', async ({ context, page }) => {
   expect(cookie.httpOnly).toBe(true)
   expect(cookie.secure).toBe(true)
   expect(cookie.sameSite).toBe('Strict')
+})
+
+test('sign-in flow when the user does not exist', async ({ page }) => {
+  await page.goto('/')
+  const signInButton = page.locator('"Sign In"')
+  await signInButton.click()
+
+  await expect(page).toHaveURL('/sign-in')
+  const emailInput = page.locator('"Email"')
+  await emailInput.fill(factory.email())
+  const submitButton = page.locator('button:has-text("Sign In")')
+  await submitButton.click()
+
+  await expect(page).toHaveURL('/check-email')
 })

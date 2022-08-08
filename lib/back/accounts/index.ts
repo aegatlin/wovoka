@@ -9,7 +9,6 @@ export const Accounts = {
   async signIn({ email, rememberMe }: AuthData): Promise<SentEmail> {
     const user = await getUserByEmail(email)
     if (!user) throw E.NoUser(email)
-
     const [token, hash] = Tokens.build()
     await Tokens.create(user, TokenType.SignIn, hash)
     return await Notifier.sendSignInEmail(user, token)

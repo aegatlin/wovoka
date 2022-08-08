@@ -1,12 +1,19 @@
-import { Group, Prisma } from '@prisma/client'
-import { Card, Icon, Link, Loader, Page } from '../lib/front/core'
-import { useGroupsContext } from '../lib/front/useGroupsContext'
-import { useItem } from '../lib/front/useItem'
-import { useUserContext } from '../lib/front/useUserContext'
-import { Item } from '../lib/types'
+import useSWR from 'swr'
+import { url } from '../lib/front/api'
+import { Card, Link, Page } from '../lib/front/core'
+import { useUser } from '../lib/front/useUser'
+
+function useGroups() {
+  const { data, error } = useSWR(url.groups.all())
+
+  return {
+    groups: data?.data?.groups,
+    error: error,
+  }
+}
 
 export default function Index() {
-  const { user } = useUserContext()
+  const { user } = useUser()
 
   return (
     <Page.Main>
@@ -22,9 +29,9 @@ function SignUpOrSignInCard() {
   return (
     <Card.Main>
       <div className="space-x-1">
-        <Link.Main to="/sign-up">Sign up</Link.Main>
+        <Link.Main to="/sign-up" text="Sign up" />
         <span>or</span>
-        <Link.Main to="/sign-in">sign in</Link.Main>
+        <Link.Main to="/sign-in" text="sign in" />
         <span>to get started</span>
       </div>
     </Card.Main>
@@ -32,23 +39,25 @@ function SignUpOrSignInCard() {
 }
 
 function View() {
+  // const { groups, error } = useGroups()
+
   return (
     <Card.Main>
-      <Groups />
+      {/* <Groups /> */}
     </Card.Main>
   )
 }
 
 function Groups() {
-  const { groups } = useGroupsContext()
+  // const { groups } = useGroupsContext()
 
-  if (!groups) return <Loader.Main />
+  // if (!groups) return <Loader.Main />
 
   return (
     <div className="">
-      {groups.map((g) => (
+      {/* {groups.map((g) => (
         <GroupComponent key={g.id} group={g} />
-      ))}
+      ))} */}
     </div>
   )
 }

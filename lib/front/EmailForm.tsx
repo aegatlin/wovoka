@@ -46,7 +46,7 @@ function Email() {
         name={name}
         label="Email"
         value={value || ''}
-        valid={valid}
+        valid={valid == false}
         placeholder="email"
         onChange={onChange}
       />

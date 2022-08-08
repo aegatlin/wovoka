@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test'
 import { TokenType } from '@prisma/client'
-import { db } from '../../../lib/db'
-import { factory } from '../../factory'
-import { computeHash, eventually, resetdb } from '../../support'
+import { db } from '../../lib/db'
+import { factory } from '../factory'
+import { computeHash, eventually, resetdb } from '../support'
 
 test.beforeEach(async () => {
   await resetdb()

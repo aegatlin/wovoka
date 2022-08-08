@@ -8,14 +8,13 @@ test.beforeEach(async () => {
   resetdb()
 })
 
-test('sign-out', async ({ request }) => {
-  await factory.user.createSignedInUser(request)
+test('sign-out', async ({ page }) => {
+  await factory.user.createSignedInUser(page)
   const tokenT1 = await db.prisma.token.findFirst({
     where: { type: TokenType.Session },
   })
   expect(tokenT1).toBeTruthy()
-  const res = await request.delete('/api/auth/sign-out')
-  expect(res).toBeOK()
+  await page.goto('/api/auth/sign-out')
   const tokenT2 = await db.prisma.token.findFirst({
     where: { type: TokenType.Session },
   })

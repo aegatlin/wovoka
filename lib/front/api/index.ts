@@ -1,3 +1,4 @@
+import { eor } from 'eor'
 import { AuthData, JsonApi } from '../../types'
 import { group } from './group'
 import { item } from './item'
@@ -12,17 +13,41 @@ export const api = {
     async signUp(authData: AuthData) {
       await post('/api/auth/sign-up', { data: authData })
     },
+    async signOut() {
+      await post('/api/auth/sign-out')
+    },
   },
 }
 
-async function post(url: string, body: JsonApi<any>): Promise<void> {
+export const url = {
+  session(): string {
+    return `/api/auth/session`
+  },
+  groups: {
+    all(): string {
+      return `/api/groups`
+    },
+    one(id: string): string {
+      return `/api/groups/${id}`
+    },
+  },
+  lists: {
+    one(id: string) {
+      return `/api/lists/${id}`
+    },
+  },
+}
+
+async function post(url: string, body?: JsonApi<any>): Promise<void> {
   return await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
   }).then(async (res) => {
-    return await res.json()
+    const [e, json] = await eor(res.json())
+    if (e) return
+    return json
   })
 }

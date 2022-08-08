@@ -1,10 +1,17 @@
-import { randEmail } from '@ngneat/falso'
-import { APIRequestContext } from '@playwright/test'
-import { Token, TokenType, User } from '@prisma/client'
+import { randBird, randEmail } from '@ngneat/falso'
+import { APIRequestContext, Page } from '@playwright/test'
+import { Token, TokenType, User, Group } from '@prisma/client'
 import { Tokens } from '../lib/back/accounts/tokens'
 import { db } from '../lib/db'
 
 export const factory = {
+  group: {
+    async create(user: User) {
+      return await db.prisma.group.create({
+        data: { name: randBird(), members: { connect: [{ id: user.id }] } },
+      })
+    },
+  },
   email: () => randEmail(),
   user: {
     async create(
@@ -15,10 +22,10 @@ export const factory = {
 
       return await db.prisma.user.create({ data })
     },
-    async createSignedInUser(request: APIRequestContext): Promise<User> {
+    async createSignedInUser(page: Page): Promise<User> {
       const user = await factory.user.create({ confirmed: true })
       const [token, hex] = await factory.token.create(user, TokenType.SignIn)
-      await request.get(`/api/auth/confirm?token=${hex}`)
+      await page.goto(`/api/auth/confirm?token=${hex}`)
       return user
     },
   },
