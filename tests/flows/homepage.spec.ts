@@ -6,7 +6,7 @@ test.beforeEach(async () => {
   resetdb()
 })
 
-test('can create group, list, item, and view them all', async ({ page }) => {
+test.skip('can create group, list, item, and view them all', async ({ page }) => {
   const user = await factory.user.createSignedInUser(page)
   const group = await factory.group.create(user)
   await page.goto('/')

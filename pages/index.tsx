@@ -41,11 +41,7 @@ function SignUpOrSignInCard() {
 function View() {
   // const { groups, error } = useGroups()
 
-  return (
-    <Card.Main>
-      {/* <Groups /> */}
-    </Card.Main>
-  )
+  return <Card.Main>{/* <Groups /> */}</Card.Main>
 }
 
 function Groups() {

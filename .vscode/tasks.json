@@ -4,32 +4,15 @@
     {
       "label": "all",
       "type": "shell",
-      "command": "npx playwright test",
-      "problemMatcher": [],
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      }
+      "command": "npm run test",
     },
     {
       "label": "file",
       "type": "shell",
-      "command": "NODE_ENV=test npx playwright test ${file}",
-      "problemMatcher": [],
-      "group": "test",
+      "command": "npm run test -- ${file}",
       "runOptions": {
         "reevaluateOnRerun": false
       }
     },
-    {
-      "label": "line",
-      "type": "shell",
-      "command": "npx playwright test ${file}:${lineNumber}",
-      "problemMatcher": [],
-      "group": "test",
-      "runOptions": {
-        "reevaluateOnRerun": false
-      }
-    }
   ]
 }
