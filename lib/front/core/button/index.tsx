@@ -1,3 +1,4 @@
+import { mcn } from 'mcn'
 import { ReactNode } from 'react'
 
 interface ButtonProps {
@@ -10,10 +11,18 @@ export const Button = {
   Main,
 }
 
+const buttonClasses = mcn({
+  base: 'rounded-xl border p-4',
+  disabled: {
+    true: 'text-slate-400',
+    false: 'shadow hover:shadow-lg active:shadow-md',
+  },
+})
+
 function Main({ onClick, disabled = false, children }: ButtonProps) {
   return (
     <button
-      className="rounded-xl border p-4 shadow hover:shadow-lg active:shadow-md"
+      className={buttonClasses({ disabled })}
       disabled={disabled}
       onClick={onClick}
     >

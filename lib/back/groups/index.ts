@@ -1,17 +1,19 @@
-import { Group } from '@prisma/client'
+import { Group, User } from '@prisma/client'
 import { db } from '../../db'
-import { item } from '../../front/api/item'
 
 export const Groups = {
-  async all(user): Promise<Group[]> {
-    const x = await db.prisma.user.findUnique({
-      where: { id: user.id },
-      select: {
-        groups: {
-          include: { members: true, lists: { include: { items: true } } },
-        },
-      },
+  async all(user: User): Promise<Group[]> {
+    return await db.prisma.group.findMany({
+      where: { members: { some: { id: user.id } } },
     })
-    return x?.groups ?? []
+  },
+  async create(user: User, name: string): Promise<Group> {
+    return await db.prisma.group.create({
+      data: { name, members: { connect: [{ id: user.id }] } },
+    })
+  },
+  async destroy(id: string): Promise<void> {
+    await db.prisma.group.delete({ where: { id } })
+    return
   },
 }

@@ -1,16 +1,6 @@
-import useSWR from 'swr'
-import { url } from '../lib/front/api'
-import { Card, Link, Page } from '../lib/front/core'
+import { Card, Link, Loader, Page } from '../lib/front/core'
+import { useGroups } from '../lib/front/useGroups'
 import { useUser } from '../lib/front/useUser'
-
-function useGroups() {
-  const { data, error } = useSWR(url.groups.all())
-
-  return {
-    groups: data?.data?.groups,
-    error: error,
-  }
-}
 
 export default function Index() {
   const { user } = useUser()
@@ -39,9 +29,19 @@ function SignUpOrSignInCard() {
 }
 
 function View() {
-  // const { groups, error } = useGroups()
+  const { groups, error } = useGroups()
 
-  return <Card.Main>{/* <Groups /> */}</Card.Main>
+  if (!groups && !error) return <Loader.Main />
+  return (
+    <Card.Main>
+      {groups &&
+        groups.map((g) => (
+          <div key={g.id} className="">
+            {g.name}
+          </div>
+        ))}
+    </Card.Main>
+  )
 }
 
 function Groups() {

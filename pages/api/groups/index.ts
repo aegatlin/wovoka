@@ -1,6 +1,8 @@
+import { Group } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getUserFromSession } from '../../../lib/back/apiHelpers'
 import { Groups } from '../../../lib/back/groups'
+import { JsonApi } from '../../../lib/types'
 
 export default async function groups(
   req: NextApiRequest,
@@ -10,7 +12,8 @@ export default async function groups(
     const user = await getUserFromSession(req)
     if (user) {
       const groups = await Groups.all(user)
-      res.json({ groups })
+      const json: JsonApi<{ groups: Group[] }> = { data: { groups } }
+      res.json(json)
     } else {
       res.json({ error: 'problem' })
     }

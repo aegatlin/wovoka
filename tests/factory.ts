@@ -1,10 +1,12 @@
 import { randBird, randEmail } from '@ngneat/falso'
-import { APIRequestContext, Page } from '@playwright/test'
-import { Token, TokenType, User, Group } from '@prisma/client'
+import { Page } from '@playwright/test'
+import { Token, TokenType, User } from '@prisma/client'
 import { Tokens } from '../lib/back/accounts/tokens'
 import { db } from '../lib/db'
 
 export const factory = {
+  email: () => randEmail(),
+  bird: () => randBird(),
   group: {
     async create(user: User) {
       return await db.prisma.group.create({
@@ -12,7 +14,6 @@ export const factory = {
       })
     },
   },
-  email: () => randEmail(),
   user: {
     async create(
       { confirmed }: { confirmed: boolean } = { confirmed: false }

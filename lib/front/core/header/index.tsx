@@ -30,7 +30,7 @@ function Main() {
         </div>
       )}
       {user && (
-        <div className="flex space-x-2">
+        <div className="flex items-center space-x-2">
           <span>{user.email}</span>
           <Button.Main onClick={signOut}>Sign Out</Button.Main>
         </div>

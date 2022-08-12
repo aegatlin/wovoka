@@ -23,6 +23,7 @@
     "extends": "next/core-web-vitals"
   },
   "dependencies": {
+    "@aegatlin/form": "^0.0.4",
     "@ngneat/falso": "^6.0.3",
     "@prisma/client": "^4.0.0",
     "axios": "^0.27.2",
