@@ -1,5 +1,5 @@
 import { Card, Link, Loader, Page } from '../lib/front/core'
-import { useGroups } from '../lib/front/useGroups'
+import { useGroups } from '../lib/front/hooks'
 import { useUser } from '../lib/front/useUser'
 
 export default function Index() {
@@ -37,7 +37,7 @@ function View() {
       {groups &&
         groups.map((g) => (
           <div key={g.id} className="">
-            {g.name}
+            <Link.Main to={`/groups/${g.id}`} text={g.name} />
           </div>
         ))}
     </Card.Main>

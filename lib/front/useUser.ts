@@ -1,8 +1,8 @@
 import useSWR from 'swr'
-import { url } from './api'
+import { routes } from '../routes'
 
 export function useUser() {
-  const { data, mutate, error } = useSWR(url.session())
+  const { data, mutate, error } = useSWR(routes.api.auth.session())
 
   return {
     user: data?.data?.user ?? null,

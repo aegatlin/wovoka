@@ -8,6 +8,26 @@ test.beforeEach(async () => {
   resetdb()
 })
 
+test.describe('Group.oneWithMember', () => {
+  let user, group
+
+  test.beforeEach(async () => {
+    user = await factory.user.create()
+    group = await factory.group.create(user)
+  })
+
+  test('returns group when user is member', async () => {
+    const actual = await Groups.oneWithMember(group.id, user)
+    expect(actual?.id).toBe(group.id)
+  })
+
+  test('returns null when user is NOT a member of the group', async () => {
+    const wrongUser = await factory.user.create()
+    const actual = await Groups.oneWithMember(group.id, wrongUser)
+    expect(actual).toBeNull()
+  })
+})
+
 test('Group.all', async () => {
   const user = await factory.user.create()
   const group1 = await factory.group.create(user)
@@ -19,9 +39,9 @@ test('Group.all', async () => {
 
 test('Group.create', async () => {
   const user = await factory.user.create()
-  const bird = factory.bird()
-  const group = await Groups.create(user, bird)
-  expect(group.name).toBe(bird)
+  const groupName = factory.group.name()
+  const group = await Groups.create(user, groupName)
+  expect(group.name).toBe(groupName)
   const groupWithMembers = await db.prisma.group.findFirst({
     include: { members: true },
   })

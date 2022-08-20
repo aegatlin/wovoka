@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Accounts } from '../../../lib/back/accounts'
-import { setCookie } from '../../../lib/back/apiHelpers'
+import { setCookie } from '../../../lib/back/middleware'
 
 export default async function confirm(
   req: NextApiRequest,

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
-import { factory } from '../../../factory'
-import { resetdb } from '../../../support'
+import { factory } from '../../factory'
+import { resetdb } from '../../support'
 
 test.beforeEach(async () => {
   await resetdb()

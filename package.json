@@ -23,7 +23,6 @@
     "extends": "next/core-web-vitals"
   },
   "dependencies": {
-    "@aegatlin/form": "^0.0.4",
     "@ngneat/falso": "^6.0.3",
     "@prisma/client": "^4.0.0",
     "axios": "^0.27.2",
@@ -36,6 +35,7 @@
     "prisma": "^4.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-flat-store": "^0.2.0",
     "swr": "^1.3.0"
   },
   "devDependencies": {

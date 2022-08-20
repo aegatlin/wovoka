@@ -14,5 +14,13 @@
         "reevaluateOnRerun": false
       }
     },
+    {
+      "label": "line",
+      "type": "shell",
+      "command": "npm run test -- ${file}:${lineNumber}",
+      "runOptions": {
+        "reevaluateOnRerun": false
+      }
+    },
   ]
 }

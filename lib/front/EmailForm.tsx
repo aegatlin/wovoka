@@ -1,5 +1,5 @@
-import { buildForm } from '@aegatlin/form'
 import { useState } from 'react'
+import { createFlatStore } from 'react-flat-store'
 import { AuthData } from '../types'
 import { Button, Card, Input } from './core'
 import { validate } from './validations'
@@ -9,10 +9,24 @@ interface EmailFormProps {
   onSubmit: (authData: AuthData) => void
 }
 
-const { Form, useForm, useFormField } = buildForm({
+const {
+  Store: Form,
+  useStore: useForm,
+  useKey,
+} = createFlatStore({
   email: '',
   rememberMe: false,
 })
+
+const useEmail = () => {
+  const { key, value, update } = useKey('email')
+  return { key, email: value, update }
+}
+
+const useRememberMe = () => {
+  const { key, value, update } = useKey('rememberMe')
+  return { key, rememberMe: value, update }
+}
 
 export function EmailForm({ name, onSubmit }: EmailFormProps) {
   return (
@@ -30,14 +44,14 @@ export function EmailForm({ name, onSubmit }: EmailFormProps) {
 }
 
 function Email() {
-  const { name, value: email, update } = useFormField('email')
+  const { key, email, update } = useEmail()
   const { valid, errors } = validate.email(email)
   const [show, setShow] = useState(false)
 
   return (
     <div className="" onBlur={() => setShow(true)}>
       <Input.Text
-        name={name}
+        name={key}
         label="Email"
         value={email}
         valid={!show ? undefined : valid}
@@ -50,16 +64,16 @@ function Email() {
 }
 
 function RememberMe() {
-  const { name, value, update } = useFormField('rememberMe')
+  const { key, rememberMe, update } = useRememberMe()
 
   return (
     <div>
       <Input.Checkbox
-        name={name}
+        name={key}
         label="Remember this computer"
-        checked={value}
-        value={value}
-        onChange={() => update(!value)}
+        checked={rememberMe}
+        value={rememberMe}
+        onChange={() => update(!rememberMe)}
       />
     </div>
   )

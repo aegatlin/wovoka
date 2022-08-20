@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getUserFromSession } from '../../../lib/back/apiHelpers'
+import { getUserFromSession } from '../../../lib/back/middleware'
 import { JsonApi } from '../../../lib/types'
 
 export default async function session(

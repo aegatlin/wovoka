@@ -6,10 +6,10 @@ test.beforeEach(async () => {
   resetdb()
 })
 
-test.skip('can create group, list, item, and view them all', async ({ page }) => {
+test('user can view their groups', async ({ page }) => {
   const user = await factory.user.createSignedInUser(page)
   const group = await factory.group.create(user)
   await page.goto('/')
-  page.locator('"Create New Group"').click()
-  expect(page.locator('body')).toHaveText(group.name)
+  await page.locator(`"${group.name}"`).click()
+  expect(page.url()).toMatch(`/groups/${group.id}`)
 })

@@ -1,4 +1,5 @@
 import { eor } from 'eor'
+import { routes } from '../../routes'
 import { AuthData, JsonApi } from '../../types'
 import { group } from './group'
 import { item } from './item'
@@ -8,13 +9,13 @@ export const api = {
   item,
   auth: {
     async signIn(authData: AuthData) {
-      await post('/api/auth/sign-in', { data: authData })
+      await post(routes.api.auth.signIn(), { data: authData })
     },
     async signUp(authData: AuthData) {
-      await post('/api/auth/sign-up', { data: authData })
+      await post(routes.api.auth.signUp(), { data: authData })
     },
     async signOut() {
-      await post('/api/auth/sign-out')
+      await post(routes.api.auth.signOut())
     },
   },
 }
@@ -32,8 +33,16 @@ export const url = {
     },
   },
   lists: {
-    one(id: string) {
-      return `/api/lists/${id}`
+    all(groupId: string) {
+      return `/api/groups/${groupId}/lists`
+    },
+    one(groupId: string, listId: string) {
+      return `/api/groups/${groupId}/lists/${listId}`
+    },
+  },
+  items: {
+    all(groupId: string, listId: string) {
+      return `/api/groups/${groupId}/lists/${listId}/items`
     },
   },
 }

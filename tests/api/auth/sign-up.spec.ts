@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 import { TokenType } from '@prisma/client'
-import { db } from '../../../../lib/db'
-import { AuthData, JsonApi } from '../../../../lib/types'
-import { factory } from '../../../factory'
-import { resetdb } from '../../../support'
+import { db } from '../../../lib/db'
+import { AuthData, JsonApi } from '../../../lib/types'
+import { factory } from '../../factory'
+import { resetdb } from '../../support'
 
 test.beforeEach(async () => {
   await resetdb()
