@@ -1,10 +1,16 @@
+import { Item } from '@prisma/client'
+import { Pre } from './types'
+
 export const routes = {
   api: {
     auth: {
-      signUp: () => 'api/auth/sign-up',
-      signIn: () => 'api/auth/sign-in',
-      signOut: () => 'api/auth/sign-out',
-      session: () => 'api/auth/session',
+      signUp: () => '/api/auth/sign-up',
+      signIn: () => '/api/auth/sign-in',
+      signOut: () => '/api/auth/sign-out',
+      session: () => '/api/auth/session',
+    },
+    items: {
+      index: () => '/api/items',
     },
     groups: {
       index: () => '/api/groups',
@@ -21,5 +27,10 @@ export const routes = {
       ) => `/api/groups/${groupId}/lists/${listId}/items/${itemId}`,
     },
   },
-  pages: {},
+  pages: {
+    groups: {
+      index: () => '/groups',
+      groupId: (groupId: string) => `/groups/${groupId}`,
+    },
+  },
 }

@@ -8,4 +8,13 @@ export const Items = {
   async one(id: string): Promise<Item | null> {
     return await db.prisma.item.findUnique({ where: { id } })
   },
+  async create({
+    content,
+    listId,
+  }: {
+    content: string
+    listId: string
+  }): Promise<Item> {
+    return await db.prisma.item.create({ data: { content, listId } })
+  },
 }

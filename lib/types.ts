@@ -13,3 +13,8 @@ export interface AuthData {
 export interface JsonApi<T> {
   data: T
 }
+
+export interface NewItem {
+  content: string
+  listId: string
+}

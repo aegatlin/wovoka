@@ -33,8 +33,9 @@ test('Group.all', async () => {
   const group1 = await factory.group.create(user)
   const group2 = await factory.group.create(user)
   const groups = await Groups.all(user)
-  expect(groups[0].name).toBe(group1.name)
-  expect(groups[1].name).toBe(group2.name)
+  expect(groups.length).toBe(2)
+  expect(groups.find((g) => g.name == group1.name)).toBeTruthy()
+  expect(groups.find((g) => g.name == group2.name)).toBeTruthy()
 })
 
 test('Group.create', async () => {

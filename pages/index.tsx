@@ -1,5 +1,14 @@
+import { Group, List } from '@prisma/client'
+import { api } from '../lib/front/api'
 import { Card, Link, Loader, Page } from '../lib/front/core'
-import { useGroups } from '../lib/front/hooks'
+import {
+  useGroup,
+  useGroupList,
+  useGroupListItems,
+  useGroupLists,
+  useGroups,
+} from '../lib/front/hooks'
+import { NewItemForm } from '../lib/front/NewItemForm'
 import { useUser } from '../lib/front/useUser'
 
 export default function Index() {
@@ -29,74 +38,38 @@ function SignUpOrSignInCard() {
 }
 
 function View() {
-  const { groups, error } = useGroups()
+  const { groups } = useGroups()
+  const { group } = useGroup(groups?.at(0)?.id ?? null)
+  const { lists } = useGroupLists(group?.id ?? null)
+  const { list } = useGroupList(group?.id ?? null, lists?.at(0)?.id ?? null)
 
-  if (!groups && !error) return <Loader.Main />
+  if (!group || !list) return <Loader.Main />
+
+  return <ListCard group={group} list={list} />
+}
+
+function ListCard({ group, list }: { group: Group; list: List }) {
+  const { items, mutate } = useGroupListItems(group.id, list.id)
+  const submit = ({ content }) => {
+    api.items.create({ content, listId: list.id }).then(() => mutate())
+  }
+
   return (
     <Card.Main>
-      {groups &&
-        groups.map((g) => (
-          <div key={g.id} className="">
-            <Link.Main to={`/groups/${g.id}`} text={g.name} />
-          </div>
-        ))}
+      <div className="">
+        {group.name} {'>'} {list.name}
+      </div>
+      {items &&
+        items.map((item) => {
+          return (
+            <div key={item.id} className="">
+              {item.content}
+            </div>
+          )
+        })}
+      <div className="">
+        <NewItemForm submit={submit} />
+      </div>
     </Card.Main>
-  )
-}
-
-function Groups() {
-  // const { groups } = useGroupsContext()
-
-  // if (!groups) return <Loader.Main />
-
-  return (
-    <div className="">
-      {/* {groups.map((g) => (
-        <GroupComponent key={g.id} group={g} />
-      ))} */}
-    </div>
-  )
-}
-
-function GroupComponent({ group }) {
-  return (
-    <div>
-      <div>{group.name}</div>
-      {group.lists.map((l) => (
-        <List key={l.id} list={l} />
-      ))}
-    </div>
-  )
-}
-
-function List({ list }) {
-  // const onFormSubmit = ({ title }) => create({ title, listId: list?.id })
-
-  return (
-    <div className="mt-4 space-y-4">
-      <div>{list.name}</div>
-      {list.items.map((i) => (
-        <ListItem key={i.id} item={i} />
-      ))}
-      {/* <div className="">
-        <NewItemForm createItem={(item: Pre<Item>) => create(item)} />
-      </div> */}
-    </div>
-  )
-}
-
-function ListItem({ item }) {
-  // const { destroy } = useItem({ itemId: item.id })
-
-  return (
-    <div className="flex rounded-xl border p-4">
-      <span className="grow">{item.content}</span>
-      {/* <button>
-        <Icon.Edit />
-      </button> */}
-      {/* <button onClick={() => destroy(item)}>
-        <Icon.X />
-      </button> */}
-    </div>
   )
 }

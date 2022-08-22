@@ -1,12 +1,8 @@
 import { eor } from 'eor'
-import { routes } from '../../routes'
-import { AuthData, JsonApi } from '../../types'
-import { group } from './group'
-import { item } from './item'
+import { routes } from '../routes'
+import { AuthData, JsonApi, NewItem } from '../types'
 
 export const api = {
-  group,
-  item,
   auth: {
     async signIn(authData: AuthData) {
       await post(routes.api.auth.signIn(), { data: authData })
@@ -18,31 +14,10 @@ export const api = {
       await post(routes.api.auth.signOut())
     },
   },
-}
-
-export const url = {
-  session(): string {
-    return `/api/auth/session`
-  },
-  groups: {
-    all(): string {
-      return `/api/groups`
-    },
-    one(id: string): string {
-      return `/api/groups/${id}`
-    },
-  },
-  lists: {
-    all(groupId: string) {
-      return `/api/groups/${groupId}/lists`
-    },
-    one(groupId: string, listId: string) {
-      return `/api/groups/${groupId}/lists/${listId}`
-    },
-  },
   items: {
-    all(groupId: string, listId: string) {
-      return `/api/groups/${groupId}/lists/${listId}/items`
+    async create(newItem: NewItem) {
+      const body: JsonApi<NewItem> = { data: newItem }
+      await post(routes.api.items.index(), body)
     },
   },
 }

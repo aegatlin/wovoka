@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getUserFromSession } from '../../../lib/back/middleware'
+import { middleware } from '../../../lib/back/middleware'
 import { JsonApi } from '../../../lib/types'
 
 export default async function session(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const user = await getUserFromSession(req)
+  const user = await middleware.user(req)
   if (!user) {
     const body: JsonApi<null> = { data: null }
     res.json(body)

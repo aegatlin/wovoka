@@ -1,49 +1,43 @@
-import { Item, Pre } from '../types'
-import {
-  Button,
-  Form,
-  FormSubmit,
-  Input,
-  useChangeField,
-  useForm,
-} from './core'
+import { createFlatStore } from 'react-flat-store'
+import { Button, Input } from './core'
 
-export function NewItemForm({
-  createItem,
-}: {
-  createItem: (pre: Pre<Item>) => void
-}) {
-  const onSubmit: FormSubmit = (state) => {
-    const title = state['new-item'].value || ''
-    const preItem: Pre<Item> = {
-      title,
-    }
-  }
+const { Store, useStore, useKey } = createFlatStore({ newItem: '' })
 
+const useNewItem = () => {
+  const { key, value, update } = useKey('newItem')
+  return { key, newItem: value, update }
+}
+
+export interface NewItemFormProps {
+  submit: (data: { content: string }) => void
+}
+
+export function NewItemForm({ submit }: NewItemFormProps) {
   return (
-    <Form onSubmit={() => undefined}>
-      <div className="">
-        <NewItem />
-        <Submit />
-      </div>
-    </Form>
+    <Store>
+      <NewItem />
+      <Submit submit={submit} />
+    </Store>
   )
 }
 
 function NewItem() {
-  const { name, value, onChange } = useChangeField({ name: 'new-item' })
+  const { key, newItem, update } = useNewItem()
+
   return (
     <Input.Text
-      name={name}
+      name={key}
       label="New Item"
-      placeholder="new item title..."
-      value={value}
-      onChange={onChange}
+      placeholder="new item content..."
+      value={newItem}
+      onChange={(e) => update(e.target.value)}
     />
   )
 }
 
-function Submit() {
-  const { onSubmit } = useForm()
-  return <Button.Main onClick={() => onSubmit()}>Submit</Button.Main>
+function Submit({ submit }: { submit: NewItemFormProps['submit'] }) {
+  const { newItem } = useStore()
+  return (
+    <Button.Main onClick={() => submit({ content: newItem })}>Add</Button.Main>
+  )
 }

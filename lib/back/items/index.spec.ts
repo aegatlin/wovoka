@@ -26,3 +26,9 @@ test('Items.one', async () => {
   const i = await Items.one(item.id)
   expect(i?.content).toBe(item.content)
 })
+
+test('Items.create', async () => {
+  const content = 'test content'
+  const i = await Items.create({ content, listId: list.id })
+  expect(i?.content).toBe(content)
+})

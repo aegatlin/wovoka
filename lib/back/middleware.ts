@@ -1,40 +1,19 @@
-import { Group, Item, List, User } from '@prisma/client'
+import { User } from '@prisma/client'
 import cookie from 'cookie'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { JsonApi } from '../types'
 import { Tokens } from './accounts/tokens'
-import { Groups } from './groups'
-import { Items } from './items'
-import { Lists } from './lists'
-
-export function setCookie(res: NextApiResponse, v: [string, string][]): void {
-  const c = v.map(([name, value]) =>
-    cookie.serialize(name, value, {
-      httpOnly: true,
-      secure: true,
-      sameSite: true,
-      path: '/',
-    })
-  )
-
-  res.setHeader('Set-Cookie', c)
-}
-
-export async function getUserFromSession(
-  req: NextApiRequest
-): Promise<User | null> {
-  const { session } = req.cookies
-  if (!session) return null
-
-  const sessionToken = await Tokens.getTokenByHex(session)
-  const user = sessionToken?.user
-
-  if (!user) return null
-  return user
-}
 
 export const middleware = {
   async user(req: NextApiRequest): Promise<User | null> {
-    return await getUserFromSession(req)
+    const { session } = req.cookies
+    if (!session) return null
+
+    const sessionToken = await Tokens.getTokenByHex(session)
+    const user = sessionToken?.user
+
+    if (!user) return null
+    return user
   },
   getQueryParam(req: NextApiRequest, queryParam: string): string | null {
     const qp = req.query[queryParam]
@@ -62,4 +41,34 @@ export const middleware = {
 
     res.setHeader('Set-Cookie', c)
   },
+  extractor,
+  extract: {
+    newItem: extractor<{ content: string; listId: string }>({
+      content: (body) => body.data.content,
+      listId: (body) => body.data.listId,
+    }),
+  },
 }
+
+function extractor<Output, Payload = any>(extractor: {
+  [Key in keyof Output]: (payload: Payload) => Output[Key]
+}): (payload: Payload) => Output | null {
+  return (payload) => {
+    try {
+      const output = {}
+
+      Object.keys(extractor).forEach((key) => {
+        const value = extractor[key](payload)
+        output[key] = value
+      })
+
+      return output as Output
+    } catch {
+      return null
+    }
+  }
+}
+
+const params = extractor({
+  groupId: (query) => query.groupId,
+})
