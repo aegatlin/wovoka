@@ -12,12 +12,13 @@ import { NewItemForm } from '../lib/front/NewItemForm'
 import { useUser } from '../lib/front/useUser'
 
 export default function Index() {
-  const { user, error } = useUser()
+  const { user } = useUser()
 
   return (
     <Page.Main>
       <main>
-        {!user && (!error ? <Loader.Main /> : <SignUpOrSignInCard />)}
+        {user === undefined && <Loader.Main />}
+        {user === null && <SignUpOrSignInCard />}
         {user && <View />}
       </main>
     </Page.Main>

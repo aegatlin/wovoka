@@ -12,8 +12,8 @@ test('sign-in flow', async ({ context, page }) => {
   const user = await factory.user.create({ confirmed: true })
 
   await page.goto('/')
-  const signInButton = page.locator('"Sign In"')
-  await signInButton.click()
+  await expect(page.locator('main')).toContainText('sign in')
+  await page.locator('header a:has-text("Sign In")').click()
 
   await expect(page).toHaveURL('/sign-in')
   const emailInput = page.locator('"Email"')
