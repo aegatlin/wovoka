@@ -7,7 +7,6 @@
     "format": "prettier --write pages lib tests",
     "prepare": "skooh",
     "test": "playwright test",
-    "db:deploy": "prisma migrate deploy",
     "db:reset": "prisma migrate reset --force"
   },
   "hooks": {

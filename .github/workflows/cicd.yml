@@ -20,5 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci
-      - run: npm run db:deploy
+      - run: npx prisma migrate deploy
+      - run: npx playwright install --with-deps
       - run: npm run test
