@@ -23,4 +23,7 @@ test('user can manipulate their first list', async ({ page }) => {
   await page.locator('"Add"').click()
   await expect(page.locator('text="New Item"')).not.toHaveText(newItemContent)
   await expect(page.locator('main')).toContainText(newItemContent)
+
+  await page.locator(`span:has-text("${newItemContent}") ~ button`).click()
+  await expect(page.locator('main')).not.toContainText(newItemContent)
 })

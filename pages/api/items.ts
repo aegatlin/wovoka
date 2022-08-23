@@ -1,6 +1,7 @@
 import { Item } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Items } from '../../lib/back/items'
+import { Lists } from '../../lib/back/lists'
 import { middleware } from '../../lib/back/middleware'
 import { JsonApi } from '../../lib/types'
 
@@ -12,10 +13,35 @@ export default async function groups(
     case 'POST':
       await post(req, res)
       break
+    case 'DELETE':
+      await del(req, res)
+      break
     default:
       res.status(405).end()
       break
   }
+}
+
+async function del(req: NextApiRequest, res: NextApiResponse) {
+  const user = await middleware.user(req)
+  const params = middleware.extractor({
+    itemId: (req) => req.query.itemId as string,
+  })(req)
+
+  if (!user || !params) {
+    res.status(403).end()
+    return
+  }
+
+  const { itemId } = params
+  const item = await Items.oneWithMember(itemId, user)
+  if (!item) {
+    res.status(403).end()
+    return
+  }
+
+  const bool = await Items.destroy(item.id)
+  res.status(bool ? 200 : 500).end()
 }
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
@@ -36,7 +62,12 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const { content, listId } = newItemData
-  const item = await Items.create({ content, listId })
+  const list = await Lists.oneWithMember(listId, user)
+  if (!list) {
+    res.status(403).end()
+    return
+  }
+  const item = await Items.create({ content, listId: list.id })
 
   const json: JsonApi<{ item: Item }> = { data: { item } }
   res.json(json)

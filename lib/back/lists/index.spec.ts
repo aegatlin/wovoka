@@ -3,14 +3,27 @@ import { Lists } from '.'
 import { factory } from '../../../tests/factory'
 import { resetdb } from '../../../tests/support'
 
-let user, group, list
+let user, wrongUser, group, list
 
 test.beforeEach(async () => {
   resetdb()
 
   user = await factory.user.create()
+  wrongUser = await factory.user.create()
   group = await factory.group.create(user)
   list = await factory.list.create(group)
+})
+
+test.describe('Lists.oneWithMember', () => {
+  test('returns list when user is member of group', async () => {
+    const l = await Lists.oneWithMember(list.id, user)
+    expect(l).toBeTruthy()
+  })
+
+  test('returns null when user is non-member of group', async () => {
+    const l = await Lists.oneWithMember(list.id, wrongUser)
+    expect(l).toBeNull()
+  })
 })
 
 test('Lists.all', async () => {

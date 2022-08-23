@@ -1,6 +1,3 @@
-import { Item } from '@prisma/client'
-import { Pre } from './types'
-
 export const routes = {
   api: {
     auth: {
@@ -10,7 +7,10 @@ export const routes = {
       session: () => '/api/auth/session',
     },
     items: {
-      index: () => '/api/items',
+      index: (queryParams?: string) => {
+        if (!queryParams) return `/api/items`
+        return `/api/items?${queryParams}`
+      },
     },
     groups: {
       index: () => '/api/groups',

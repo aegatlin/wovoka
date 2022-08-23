@@ -19,6 +19,10 @@ export const api = {
       const body: JsonApi<NewItem> = { data: newItem }
       await post(routes.api.items.index(), body)
     },
+    async destroy(itemId: string) {
+      const queryParams = `itemId=${itemId}`
+      await del(routes.api.items.index(queryParams))
+    },
   },
 }
 
@@ -29,6 +33,16 @@ async function post(url: string, body?: JsonApi<any>): Promise<void> {
       'Content-Type': 'application/json',
     },
     body: body ? JSON.stringify(body) : undefined,
+  }).then(async (res) => {
+    const [e, json] = await eor(res.json())
+    if (e) return
+    return json
+  })
+}
+
+async function del(url: string): Promise<void> {
+  return await fetch(url, {
+    method: 'DELETE',
   }).then(async (res) => {
     const [e, json] = await eor(res.json())
     if (e) return

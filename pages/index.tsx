@@ -1,6 +1,6 @@
 import { Group, List } from '@prisma/client'
 import { api } from '../lib/front/api'
-import { Card, Link, Loader, Page } from '../lib/front/core'
+import { Button, Card, Link, Loader, Page } from '../lib/front/core'
 import {
   useGroup,
   useGroupList,
@@ -12,12 +12,12 @@ import { NewItemForm } from '../lib/front/NewItemForm'
 import { useUser } from '../lib/front/useUser'
 
 export default function Index() {
-  const { user } = useUser()
+  const { user, error } = useUser()
 
   return (
     <Page.Main>
       <main>
-        {!user && <SignUpOrSignInCard />}
+        {!user && (!error ? <Loader.Main /> : <SignUpOrSignInCard />)}
         {user && <View />}
       </main>
     </Page.Main>
@@ -53,20 +53,24 @@ function ListCard({ group, list }: { group: Group; list: List }) {
   const submit = ({ content }) => {
     api.items.create({ content, listId: list.id }).then(() => mutate())
   }
+  const del = (itemId: string) => {
+    api.items.destroy(itemId).then(() => mutate())
+  }
 
   return (
     <Card.Main>
-      <div className="">
-        {group.name} {'>'} {list.name}
+      <div className="">{`${group.name} > ${list.name}`}</div>
+      <div className="my-4 space-y-4">
+        {items &&
+          items.map((item) => {
+            return (
+              <div key={item.id} className="flex justify-between border p-2">
+                <span>{item.content}</span>
+                <Button.Main onClick={() => del(item.id)}>Delete</Button.Main>
+              </div>
+            )
+          })}
       </div>
-      {items &&
-        items.map((item) => {
-          return (
-            <div key={item.id} className="">
-              {item.content}
-            </div>
-          )
-        })}
       <div className="">
         <NewItemForm submit={submit} />
       </div>

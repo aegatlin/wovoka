@@ -1,4 +1,4 @@
-import { Item, List } from '@prisma/client'
+import { Item, List, User } from '@prisma/client'
 import { db } from '../../db'
 
 export const Items = {
@@ -8,6 +8,14 @@ export const Items = {
   async one(id: string): Promise<Item | null> {
     return await db.prisma.item.findUnique({ where: { id } })
   },
+  async oneWithMember(itemId: string, user: User): Promise<Item | null> {
+    return await db.prisma.item.findFirst({
+      where: {
+        id: itemId,
+        list: { group: { members: { some: { id: user.id } } } },
+      },
+    })
+  },
   async create({
     content,
     listId,
@@ -16,5 +24,9 @@ export const Items = {
     listId: string
   }): Promise<Item> {
     return await db.prisma.item.create({ data: { content, listId } })
+  },
+  async destroy(id: string): Promise<boolean> {
+    await db.prisma.item.delete({ where: { id } })
+    return true
   },
 }

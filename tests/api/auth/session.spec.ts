@@ -15,9 +15,7 @@ test('/api/auth/session when signed in', async ({ page }) => {
   expect(json.data.user.id).toBe(user.id)
 })
 
-test('/api/auth/session when not signed in', async ({
-  request,
-}) => {
+test('/api/auth/session when not signed in', async ({ request }) => {
   const res = await request.get('/api/auth/session')
   expect(res).toBeOK()
   const json = await res.json()

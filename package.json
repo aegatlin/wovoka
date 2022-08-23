@@ -4,9 +4,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --dir pages",
-    "format": "prettier --write pages lib",
+    "format": "prettier --write pages lib tests",
     "prepare": "skooh",
-    "test": "DATABASE_URL=postgresql://aeg:aeg@localhost:5432/wovoka_test playwright test",
+    "test": "playwright test",
     "db:reset": "prisma migrate reset --force"
   },
   "hooks": {
