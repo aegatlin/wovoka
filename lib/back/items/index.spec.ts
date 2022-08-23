@@ -7,7 +7,7 @@ import { db } from '../../db'
 let user, wrongUser, group, list, item
 
 test.beforeEach(async () => {
-  resetdb()
+  await resetdb()
 
   user = await factory.user.create()
   wrongUser = await factory.user.create()

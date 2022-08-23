@@ -5,7 +5,7 @@ import { resetdb } from '../../../tests/support'
 import { db } from '../../db'
 
 test.beforeEach(async () => {
-  resetdb()
+  await resetdb()
 })
 
 test.describe('Group.oneWithMember', () => {

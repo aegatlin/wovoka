@@ -3,7 +3,7 @@ import { factory } from '../factory'
 import { resetdb } from '../support'
 
 test.beforeEach(async () => {
-  resetdb()
+  await resetdb()
 })
 
 test('user can manipulate their first list', async ({ page }) => {

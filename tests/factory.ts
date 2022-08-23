@@ -7,7 +7,7 @@ import { db } from '../lib/db'
 export const factory = {
   email: () => randEmail(),
   group: {
-    name() {
+    name(): string {
       return randBird()
     },
     async create(user: User) {
@@ -20,7 +20,7 @@ export const factory = {
     },
   },
   list: {
-    name() {
+    name(): string {
       return randCity()
     },
     async create(group: Group): Promise<List> {
@@ -30,7 +30,7 @@ export const factory = {
     },
   },
   item: {
-    content() {
+    content(): string {
       return randFood()
     },
     async create(list: List): Promise<Item> {

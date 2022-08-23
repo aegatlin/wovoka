@@ -4,7 +4,7 @@ import { factory } from '../../../../tests/factory'
 import { resetdb } from '../../../../tests/support'
 
 test.beforeEach(async () => {
-  resetdb()
+  await resetdb()
 })
 
 test('Tokens.getTokenByHex', async () => {

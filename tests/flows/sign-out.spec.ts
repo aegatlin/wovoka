@@ -5,7 +5,7 @@ import { factory } from '../factory'
 import { resetdb } from '../support'
 
 test.beforeEach(async () => {
-  resetdb()
+  await resetdb()
 })
 
 test('sign-out flow', async ({ page }) => {
