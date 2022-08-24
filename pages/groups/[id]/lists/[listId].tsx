@@ -24,7 +24,7 @@ function List({ groupId, listId }: { groupId: string; listId: string }) {
       <div>{list.name}</div>
       <div>
         {items.map((i) => (
-          <div key={i.id}>{i.content}</div>
+          <div key={i.id}>{i.title}</div>
         ))}
       </div>
     </Card.Main>

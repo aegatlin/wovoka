@@ -30,12 +30,12 @@ export const factory = {
     },
   },
   item: {
-    content(): string {
+    title(): string {
       return randFood()
     },
     async create(list: List): Promise<Item> {
       return await db.prisma.item.create({
-        data: { content: factory.item.content(), listId: list.id },
+        data: { title: factory.item.title(), listId: list.id },
       })
     },
   },

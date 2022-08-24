@@ -10,6 +10,6 @@ export interface JsonApi<T> {
 }
 
 export interface NewItem {
-  content: string
+  title: string
   listId: string
 }

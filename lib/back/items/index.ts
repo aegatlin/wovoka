@@ -1,5 +1,6 @@
 import { Item, List, User } from '@prisma/client'
 import { db } from '../../db'
+import { NewItem } from '../../types'
 
 export const Items = {
   async all(list: List): Promise<Item[]> {
@@ -16,14 +17,8 @@ export const Items = {
       },
     })
   },
-  async create({
-    content,
-    listId,
-  }: {
-    content: string
-    listId: string
-  }): Promise<Item> {
-    return await db.prisma.item.create({ data: { content, listId } })
+  async create({ title: title, listId }: NewItem): Promise<Item> {
+    return await db.prisma.item.create({ data: { title, listId } })
   },
   async destroy(id: string): Promise<boolean> {
     await db.prisma.item.delete({ where: { id } })

@@ -51,8 +51,8 @@ function View() {
 
 function ListCard({ group, list }: { group: Group; list: List }) {
   const { items, mutate } = useGroupListItems(group.id, list.id)
-  const submit = ({ content }) => {
-    api.items.create({ content, listId: list.id }).then(() => mutate())
+  const submit = ({ title }) => {
+    api.items.create({ title, listId: list.id }).then(() => mutate())
   }
   const del = (itemId: string) => {
     api.items.destroy(itemId).then(() => mutate())
@@ -66,7 +66,7 @@ function ListCard({ group, list }: { group: Group; list: List }) {
           items.map((item) => {
             return (
               <div key={item.id} className="flex justify-between border p-2">
-                <span>{item.content}</span>
+                <span>{item.title}</span>
                 <Button.Main onClick={() => del(item.id)}>Delete</Button.Main>
               </div>
             )

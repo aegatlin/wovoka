@@ -33,19 +33,19 @@ test('Items.all', async () => {
 
   const items = await Items.all(list)
   expect(items.length).toBe(2)
-  expect(items[0].content).toBe(item.content)
-  expect(items[1].content).toBe(otherItem.content)
+  expect(items[0].title).toBe(item.title)
+  expect(items[1].title).toBe(otherItem.title)
 })
 
 test('Items.one', async () => {
   const i = await Items.one(item.id)
-  expect(i?.content).toBe(item.content)
+  expect(i?.title).toBe(item.title)
 })
 
 test('Items.create', async () => {
-  const content = 'test content'
-  const i = await Items.create({ content, listId: list.id })
-  expect(i?.content).toBe(content)
+  const title = factory.item.title()
+  const i = await Items.create({ title, listId: list.id })
+  expect(i?.title).toBe(title)
 })
 
 test('Items.destroy', async () => {

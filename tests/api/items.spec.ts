@@ -56,7 +56,7 @@ test.describe('/api/items', () => {
     let json: JsonApi<NewItem>
 
     test.beforeEach(async () => {
-      json = { data: { content: 'New Item', listId: list.id } }
+      json = { data: { title: 'New Item', listId: list.id } }
     })
 
     test('responds with 403 when user not signed in', async ({ page }) => {

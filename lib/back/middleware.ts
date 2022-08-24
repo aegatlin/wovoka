@@ -1,7 +1,7 @@
 import { User } from '@prisma/client'
 import cookie from 'cookie'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { JsonApi } from '../types'
+import { JsonApi, NewItem } from '../types'
 import { Tokens } from './accounts/tokens'
 
 export const middleware = {
@@ -43,8 +43,8 @@ export const middleware = {
   },
   extractor,
   extract: {
-    newItem: extractor<{ content: string; listId: string }>({
-      content: (body) => body.data.content,
+    newItem: extractor<NewItem>({
+      title: (body) => body.data.title,
       listId: (body) => body.data.listId,
     }),
   },

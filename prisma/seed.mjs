@@ -27,7 +27,7 @@ async function seed() {
 
   const i = await prisma.item.create({
     data: {
-      content: 'My First Item',
+      title: 'My First Item',
       listId: l.id,
     },
   })

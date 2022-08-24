@@ -1,0 +1,1 @@
+ALTER TABLE "Item" RENAME COLUMN "content" TO "title";

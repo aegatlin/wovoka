@@ -16,14 +16,16 @@ test('user can manipulate their first list', async ({ page }) => {
 
   await expect(page.locator('main')).toContainText(group.name)
   await expect(page.locator('main')).toContainText(list.name)
-  await expect(page.locator('main')).toContainText(item.content)
+  await expect(page.locator('main')).toContainText(item.title)
 
-  const newItemContent = 'My New Item Content'
-  page.locator('text="New Item"').fill(newItemContent)
+  let title = factory.item.title()
+  page.locator('text="New Item"').fill(title)
   await page.locator('"Add"').click()
-  await expect(page.locator('text="New Item"')).not.toHaveText(newItemContent)
-  await expect(page.locator('main')).toContainText(newItemContent)
+  await expect(page.locator('text="New Item"')).not.toHaveText(title)
+  await expect(page.locator('main')).toContainText(title)
 
-  await page.locator(`span:has-text("${newItemContent}") ~ button`).click()
-  await expect(page.locator('main')).not.toContainText(newItemContent)
+  await page
+    .locator(`span:has-text("${title}") ~ button:has-text("Delete")`)
+    .click()
+  await expect(page.locator('main')).not.toContainText(title)
 })

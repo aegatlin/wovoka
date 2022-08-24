@@ -9,7 +9,7 @@ const useNewItem = () => {
 }
 
 export interface NewItemFormProps {
-  submit: (data: { content: string }) => void
+  submit: (data: { title: string }) => void
 }
 
 export function NewItemForm({ submit }: NewItemFormProps) {
@@ -28,7 +28,7 @@ function NewItem() {
     <Input.Text
       name={key}
       label="New Item"
-      placeholder="new item content..."
+      placeholder="new item..."
       value={newItem}
       onChange={(e) => update(e.target.value)}
     />
@@ -38,6 +38,6 @@ function NewItem() {
 function Submit({ submit }: { submit: NewItemFormProps['submit'] }) {
   const { newItem } = useStore()
   return (
-    <Button.Main onClick={() => submit({ content: newItem })}>Add</Button.Main>
+    <Button.Main onClick={() => submit({ title: newItem })}>Add</Button.Main>
   )
 }

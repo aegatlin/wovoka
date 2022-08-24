@@ -52,7 +52,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const newItemData = middleware.extractor({
-    content: (body) => body.data.content,
+    title: (body) => body.data.title,
     listId: (body) => body.data.listId,
   })(req.body)
 
@@ -61,13 +61,13 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
     return
   }
 
-  const { content, listId } = newItemData
+  const { title, listId } = newItemData
   const list = await Lists.oneWithMember(listId, user)
   if (!list) {
     res.status(403).end()
     return
   }
-  const item = await Items.create({ content, listId: list.id })
+  const item = await Items.create({ title, listId: list.id })
 
   const json: JsonApi<{ item: Item }> = { data: { item } }
   res.json(json)
